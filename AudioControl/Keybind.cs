@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -17,7 +18,7 @@ namespace AudioControl
         private uint fsModifiers;
         private uint vk;
 
-        private static delegate void KeypressHandler();
+        public delegate void KeypressHandler();
         private KeypressHandler handler;
 
         //This is used to register a keybind with windows
@@ -51,5 +52,15 @@ namespace AudioControl
             if (registered)
                 Unregister();
         }
+
+        public int getID(){
+            return id;
+        }
+
+        public void handleKeypress(){
+            handler();
+        }
+
+
     }
 }

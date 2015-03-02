@@ -18,12 +18,12 @@ namespace AudioControl
         private static uint WM_HOTKEY = 0x0312;
         private static uint WM_QUIT = 0x0012;
 
-        private List<Keybind> keybinds;
+        private List<Keybind> keybinds = new List<Keybind>();
 
         public void messageLoopForever()
         {
             bool messageReturn;
-            MSG msg;
+            MSG msg = new MSG();
             while (messageReturn = GetMessage(ref msg, (IntPtr) null, WM_HOTKEY, WM_HOTKEY))
             {//WM_Quit can be given here, even though it was filtered out. If that happens, we should DIE!!!
                 if (msg.message == WM_QUIT)
@@ -32,7 +32,7 @@ namespace AudioControl
                 }
                 else if (msg.message == WM_HOTKEY)
                 {
-                    //Handle the keybinds
+                    keybinds.ElementAt(msg.wParam.ToInt32()).handleKeypress();
                 }
                 else
                 {
@@ -41,7 +41,12 @@ namespace AudioControl
             }
         }
 
-        public int registerKeybind(Keybind keybind)
+        public int initKeybind(uint vk, uint fsmodifiers, Keybind.KeypressHandler handler){
+            Keybind kb = new Keybind(0, fsmodifiers, vk, handler);
+            return registerKeybind(kb);
+        }
+
+        private int registerKeybind(Keybind keybind)
         {
             int index = keybinds.Count;
             this.keybinds.Add(keybind);
